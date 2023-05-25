@@ -114,11 +114,19 @@ def main(local_rank, args):
     model_load_path = train_hypers['model_load_path']
     model_save_path = train_hypers['model_save_path']
     
-    occ_type = "mini" #mini or trainval
+    occ_type = "trainval" #mini or trainval
     
     SemKITTI_label_name = get_SemKITTI_label_name(dataset_config["label_mapping"])
     unique_label = np.asarray(sorted(list(SemKITTI_label_name.keys())))[1:] - 1
     unique_label_str = [SemKITTI_label_name[x] for x in unique_label + 1]
+    
+
+    # def init_dist(backend="nccl", **kwargs):
+    #     rank = int(os.environ["RANK"])
+    #     # world_size = int(os.environ["WORLD_SIZE"])
+    #     num_gpus = torch.cuda.device_count()
+    #     torch.cuda.set_device(rank % num_gpus)
+    #     dist.init_process_group(backend=backend, **kwargs)
 
     # init DDP
     distributed = True
@@ -148,6 +156,7 @@ def main(local_rank, args):
             my_model.cuda(),
             device_ids=[torch.cuda.current_device()],
             broadcast_buffers=False,
+            find_unused_parameters=True,
             )
     else:
         my_model = my_model.cuda()
@@ -165,7 +174,9 @@ def main(local_rank, args):
     print(model_save_path)
 
     my_model.to(pytorch_device)
-    optimizer = optim.Adam(my_model.parameters(), lr=train_hypers["learning_rate"])
+    # optimizer = optim.Adam(my_model.parameters(), lr=train_hypers["learning_rate"])
+
+    optimizer = optim.AdamW(my_model.parameters(), lr=train_hypers["learning_rate"], weight_decay=0.0001)
 
     loss_func, lovasz_softmax = loss_builder.build(wce=True, lovasz=True,
                                                    num_class=num_class, ignore_label=ignore_label)
@@ -270,11 +281,15 @@ def main(local_rank, args):
                             dataset.occ_eval_metrics.add_batch(predict_labels, val_vox_label0, mask_lidar, mask_camera)   
                             vis = True
                             show_dir = "./pred/no_shuffle_2/"
-                            if vis:
-                                if val_index[0] % 10 == 0:     
-                                    sample_token=info[0]['token']
-                                    save_path=os.path.join(show_dir,str(val_index[0]).zfill(4))
-                                    np.savez_compressed(save_path,pred=predict_labels,gt=gt_semantics,gt_train=val_vox_label0,sample_token=sample_token)                  
+
+                            if not os.exists(show_dir):
+                                os.makedirs((show_dir))
+
+                            # if vis:
+                            #     if val_index[0] % 10 == 0:     
+                            #         sample_token=info[0]['token']
+                            #         save_path=os.path.join(show_dir,str(val_index[0]).zfill(4))
+                            #         np.savez_compressed(save_path,pred=predict_labels,gt=gt_semantics,gt_train=val_vox_label0,sample_token=sample_token)                  
                     
                     print('Validation per class iou: ')
                     del val_vox_label, val_grid, val_pt_fea, val_pt_fea_ten, val_grid_ten, val_label_tensor

@@ -139,7 +139,7 @@ model = dict(
 
 # Data
 dataset_type = 'NuScenesDatasetOccpancy'
-data_root = 'data/occ3d-nus-mini/'
+data_root = 'data/occ3d-nus/'
 file_client_args = dict(backend='disk')
 
 bda_aug_conf = dict(

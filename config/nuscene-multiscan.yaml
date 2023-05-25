@@ -41,17 +41,17 @@ dataset_params:
 ###################
 ## Data_loader options
 train_data_loader:
-  data_path: "/home/ubuntu/Workspace/dhai-dev/Occupancy/Codes-for-SCPNet/data/occ3d-nus-mini/"
-  imageset: "/home/ubuntu/Workspace/dhai-dev/Occupancy/Codes-for-SCPNet/data/occ3d-nus-mini/occ_infos_temporal_train.pkl"
+  data_path: "./data/occ3d-nus/"
+  imageset: "./data/occ3d-nus/occ_infos_temporal_train.pkl"
   return_ref: True
-  batch_size: 1
+  batch_size: 4
   shuffle: False
-  num_workers: 2
+  num_workers: 8
 
 val_data_loader:
-  data_path: "/home/ubuntu/Workspace/dhai-dev/Occupancy/Codes-for-SCPNet/data/occ3d-nus-mini/"
+  data_path: "./data/occ3d-nus/"
   #imageset: "val"
-  imageset: "/home/ubuntu/Workspace/dhai-dev/Occupancy/Codes-for-SCPNet/data/occ3d-nus-mini/occ_infos_temporal_val.pkl"
+  imageset: "./data/occ3d-nus/occ_infos_temporal_val.pkl"
   return_ref: True
   batch_size: 1 #2
   shuffle: False
@@ -63,9 +63,10 @@ val_data_loader:
 ###################
 ## Train params
 train_params:
-  model_load_path: "./model_load_dir/epoch1.pth"
+  model_load_path: ""
   model_save_path: "./model_load_dir/"
   checkpoint_every_n_steps: 1
   max_num_epochs: 40
-  eval_every_n_steps: 300
-  learning_rate: 0.0015
+  eval_every_n_steps: 4000
+  # learning_rate: 0.0015
+  learning_rate: 0.005

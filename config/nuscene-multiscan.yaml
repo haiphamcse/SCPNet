@@ -1,0 +1,71 @@
+# Config format schema number
+format_version: 4
+
+###################
+## Model options
+model_params:
+  model_architecture: "cylinder_asym"
+
+  output_shape:
+    - 200
+    - 200
+    - 16
+
+  fea_dim: 7
+  out_fea_dim: 256
+  num_class: 18
+  num_input_features: 32
+  use_norm: True
+  init_size: 32
+
+
+###################
+## Dataset options
+dataset_params:
+  dataset_type: "voxel_dataset"
+  pc_dataset_type: "nusc" #fix here
+  ignore_label: 255
+  return_test: True
+  fixed_volume_space: True
+  label_mapping: "./config/label_mapping/nuscenes.yaml"
+  max_volume_space:
+    - 40
+    - 40
+    - 5.4
+  min_volume_space:
+    - -40
+    - -40
+    - -1
+
+
+###################
+## Data_loader options
+train_data_loader:
+  data_path: "/home/ubuntu/Workspace/dhai-dev/Occupancy/Codes-for-SCPNet/data/occ3d-nus-mini/"
+  imageset: "/home/ubuntu/Workspace/dhai-dev/Occupancy/Codes-for-SCPNet/data/occ3d-nus-mini/occ_infos_temporal_train.pkl"
+  return_ref: True
+  batch_size: 1
+  shuffle: False
+  num_workers: 2
+
+val_data_loader:
+  data_path: "/home/ubuntu/Workspace/dhai-dev/Occupancy/Codes-for-SCPNet/data/occ3d-nus-mini/"
+  #imageset: "val"
+  imageset: "/home/ubuntu/Workspace/dhai-dev/Occupancy/Codes-for-SCPNet/data/occ3d-nus-mini/occ_infos_temporal_val.pkl"
+  return_ref: True
+  batch_size: 1 #2
+  shuffle: False
+  num_workers: 2
+
+
+
+
+###################
+## Train params
+train_params:
+  model_load_path: "./model_load_dir/epoch1.pth"
+  model_save_path: "./model_load_dir/"
+  checkpoint_every_n_steps: 1
+  max_num_epochs: 40
+  eval_every_n_steps: 300
+  learning_rate: 0.0015

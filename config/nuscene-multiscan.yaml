@@ -44,9 +44,9 @@ train_data_loader:
   data_path: "./data/occ3d-nus/"
   imageset: "./data/occ3d-nus/occ_infos_temporal_train.pkl"
   return_ref: True
-  batch_size: 4
+  batch_size: 3
   shuffle: False
-  num_workers: 8
+  num_workers: 6
 
 val_data_loader:
   data_path: "./data/occ3d-nus/"
@@ -63,10 +63,10 @@ val_data_loader:
 ###################
 ## Train params
 train_params:
-  model_load_path: ""
+  model_load_path: "model_load_dir/epoch0.pth"
   model_save_path: "./model_load_dir/"
   checkpoint_every_n_steps: 1
   max_num_epochs: 40
   eval_every_n_steps: 4000
   # learning_rate: 0.0015
-  learning_rate: 0.005
+  learning_rate: 0.004
